@@ -12,7 +12,7 @@ public class MNISTReader {
     public static final int MAX_COL = 28;
     public static final int MAX_ROW = 28;
 
-    public List<MNISTImage> loadLines(File file, int maxLines) throws FileNotFoundException {
+    public List<MNISTImage> readImagesfromFile(File file, int maxLines) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         int counter = 0;
         List<MNISTImage> images = new ArrayList<>();
