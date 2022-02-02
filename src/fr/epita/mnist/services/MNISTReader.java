@@ -1,5 +1,7 @@
 package fr.epita.mnist.services;
 
+import fr.epita.mnist.datamodel.MNISTImage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -7,23 +9,31 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MNISTReader {
-    public double[][] loadLines(File file, int maxLines) throws FileNotFoundException {
+    public static final int MAX_COL = 28;
+    public static final int MAX_ROW = 28;
+
+    public List<MNISTImage> loadLines(File file, int maxLines) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         int counter = 0;
-        List<Object> matrixAsList = new ArrayList<>();
+        List<MNISTImage> images = new ArrayList<>();
 
+        scanner.nextLine(); // we skip the headers
         while (scanner.hasNext() && counter < maxLines) {
             String line = scanner.nextLine();
-            double[] lineAsDoubleArray = loadLine(line);
+            double[] lineAsDoubleArray = loadLine(line); // read a line and getting the double array
+            double[][] pixels = new double[MAX_ROW][MAX_COL];
+
+            for (int i = 0; i < MAX_ROW; i++) {
+                for (int j = 0; j < MAX_COL; j++) {
+                    pixels[i][j] = lineAsDoubleArray[i*MAX_ROW + j + 1];
+                }
+            }
+            images.add(new MNISTImage(lineAsDoubleArray[0], pixels));
             counter++;
         }
 
-        double[][] matrix = new double[counter][];
-        for (int i = 0; i < counter; i++) {
-            matrix[i] = ((double[]) matrixAsList.get(i));
-        }
-
-        return matrix;
+        scanner.close();
+        return images;
     }
 
     private static double[] loadLine(String sample) {
