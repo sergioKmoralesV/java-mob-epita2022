@@ -36,15 +36,15 @@ public class MNISTImageProcessorTest {
         System.out.println("--- Confusion matrix (average centroid) ----------------------------------------");
         double[][] confusionMatrixAverage = calculateDistribution(classifier, images);
         showMatrix(confusionMatrixAverage);
-        System.out.println("The accuracy of the model is: " + String.format("%.2f",calculateCertainty(confusionMatrixAverage, images.size()) * 100.00) + "%");
+        System.out.println("The accuracy of the model is: " + String.format("%.4f",calculateCertainty(confusionMatrixAverage, images.size()) * 100.00) + "%");
 
         System.out.println("\n--- Confusion matrix (standard deviation centroid) ----------------------------------------");
         MNISTClassifierSD classifierSD = new MNISTClassifierSD();
         classifierSD.trainCentroidsStandardDeviation(imagesTrain);
         double[][] confusionMatrixSD = calculateDistributionSD(classifierSD, images);
         showMatrix(confusionMatrixSD);
-        System.out.println("The accuracy of the model is: " + String.format("%.2f",calculateCertainty(confusionMatrixSD, images.size()) * 100.00) + "%");
-
+        System.out.println("The accuracy of the model is: " + String.format("%.4f",calculateCertainty(confusionMatrixSD, images.size()) * 100.00) + "%");
+        //Comments: We could use other processes to clean data or normalize it in order to have better and more accurate results/
     }
 
     public static void showMatrix(double[][] matrix) { //We extract this method to be part of the Image model and simplify the output
