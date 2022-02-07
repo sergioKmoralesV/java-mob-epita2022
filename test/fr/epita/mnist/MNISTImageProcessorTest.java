@@ -17,6 +17,7 @@ public class MNISTImageProcessorTest {
 
         //We are processing the images and then separating by label
         Map<Double, List<MNISTImage>> imagesByLabel = images.stream().collect(Collectors.groupingBy(MNISTImage::getLabel));
+        System.out.println("We have " + imagesByLabel.size() + " labels. \n--- Testing the centroids with the following amount of images per label ----------------------------------------");
 
         Map<Double, MNISTImage> centroids = new LinkedHashMap<>();
         //We compute the centroids for each group of images according to their label.
@@ -26,14 +27,26 @@ public class MNISTImageProcessorTest {
             System.out.println(label + " count : " + imageList.size());
             MNISTImage centroid = processor.getCentroid(label, imageList);
             centroids.put(centroid.getLabel(), centroid);
-            System.out.println(centroid);
+            //System.out.println(centroid);
         }
+
+        System.out.println("--- Testing the distance ----------------------------------------");
+        List<MNISTImage> listOfOnes = imagesByLabel.get(0.0);
+        //Here we are testing the computation of the distance
+        System.out.println(processor.getDistance(centroids.get(0.0), listOfOnes.get(0)));
+        System.out.println(processor.getDistance(centroids.get(0.0), listOfOnes.get(1)));
+
+        System.out.println("--- Calculating the distribution ----------------------------------------");
+        showMatrix(processor.calculateDistribution(centroids, images));
 
     }
 
-//        System.out.println(processor.computeDistance(listOfOnes.get(0), centroidFor1));
-//        System.out.println(processor.computeDistance(listOfZeros.get(0), centroidFor1));
-//
-//
-//        MNISTImageProcessor.displayImage(centroidFor1);
+    public static void showMatrix(double[][] matrix) { //We extract this method to be part of the Image model and simplify the output
+        for(int i = 0; i < matrix.length; i++) {
+            for(int j=0; j< matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + "\t\t");
+            }
+            System.out.println("");
+        }
+    }
 }
