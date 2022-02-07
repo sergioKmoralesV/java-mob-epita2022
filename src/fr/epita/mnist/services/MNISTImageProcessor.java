@@ -3,10 +3,8 @@ package fr.epita.mnist.services;
 import fr.epita.mnist.datamodel.MNISTImage;
 
 import java.util.List;
-import java.util.Map;
 
 public class MNISTImageProcessor {
-
     public MNISTImage getCentroid(Double label, List<MNISTImage> images) {
         MNISTImage centroid = new MNISTImage(label, new double[28][28]);
         double[][] centroidPixels = centroid.getPixels();
@@ -48,30 +46,4 @@ public class MNISTImageProcessor {
 
         return Math.sqrt(distance);
     }
-
-    public double[][] calculateDistribution(Map<Double, MNISTImage> centroids, List<MNISTImage> images) {
-        double[][] distribution = new double[10][10];
-
-        for (MNISTImage image : images) {
-            double smallestDistance = getDistance(image, centroids.get(0.0));
-            double predictedLabel = 0.0;
-
-            for (double i = 1.0; i < centroids.size(); i++) {
-                double partialDistance = getDistance(image, centroids.get(i));
-                if(partialDistance < smallestDistance) {
-                    smallestDistance = partialDistance;
-                    predictedLabel = i;
-//                    System.out.println("Label: "+ predictedLabel + " Distance: "+ smallestDistance);
-                }
-            }
-
-            int iInDistribution = (int)image.getLabel();
-            int jInDistribution = (int)predictedLabel;
-
-            distribution[iInDistribution][jInDistribution] += 1;
-        }
-
-        return distribution;
-    }
-
 }
