@@ -16,8 +16,8 @@ public class MNISTImageProcessorTest {
         MNISTImageProcessor processor = new MNISTImageProcessor();
         MNISTReader reader = new MNISTReader();
         // Clarification: I am using both files from MNIST
-        List<MNISTImage> imagesTrain = reader.readImagesfromFile("./mnist_train.csv", 100);
-        List<MNISTImage> images = reader.readImagesfromFile("./mnist_test.csv", 100);
+        List<MNISTImage> imagesTrain = reader.readImagesfromFile("./mnist_train.csv", 10000);
+        List<MNISTImage> images = reader.readImagesfromFile("./mnist_test.csv", 10000);
 
         //We are processing the images and then separating by label
         Map<Double, List<MNISTImage>> imagesByLabel = images.stream().collect(Collectors.groupingBy(MNISTImage::getLabel));
