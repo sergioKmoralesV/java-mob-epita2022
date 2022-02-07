@@ -37,6 +37,21 @@ public class MNISTClassifier {
         }
     }
 
+    public void trainCentroidsStandardDeviation (List<MNISTImage> images) {
+        MNISTImageProcessor processor = new MNISTImageProcessor();
+        //We are processing the images and then separating by label
+        Map<Double, List<MNISTImage>> imagesByLabel = images.stream().collect(Collectors.groupingBy(MNISTImage::getLabel));
+
+        for (Map.Entry<Double, List<MNISTImage>> entry : imagesByLabel.entrySet()) {
+            Double label = entry.getKey();
+            List<MNISTImage> imageList = entry.getValue();
+
+            MNISTImage centroid = processor.getCentroidStandardDeviation(label, imageList);
+            this.centroids.put(centroid.getLabel(), centroid);
+//            System.out.println(centroid);
+        }
+    }
+
     public double predict(MNISTImage image) {
         MNISTImageProcessor processor = new MNISTImageProcessor();
         double smallestDistance = processor.getDistance(image, this.centroids.get(0.0));

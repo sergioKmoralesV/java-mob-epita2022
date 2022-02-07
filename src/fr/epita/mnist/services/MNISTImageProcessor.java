@@ -22,6 +22,31 @@ public class MNISTImageProcessor {
         return centroid;
     }
 
+    public MNISTImage getCentroidStandardDeviation(Double label, List<MNISTImage> images) {
+        MNISTImage centroid = new MNISTImage(label, new double[28][28]);
+        double[][] means = getCentroid(label, images).getPixels();
+        double[][] centroidPixels = centroid.getPixels();
+
+        for (MNISTImage image : images) {
+            double[][] currentPixels = image.getPixels();
+            for (int i = 0; i < currentPixels.length; i++) {
+                for (int j = 0; j < currentPixels[i].length; j++) {
+                    centroidPixels[i][j] = centroidPixels[i][j] + Math.pow(currentPixels[i][j] - means[i][j], 2);
+                }
+            }
+        }
+
+        double size = images.size();
+        for (int i = 0; i < centroidPixels.length; i++) {
+            for (int j = 0; j < centroidPixels[i].length; j++) {
+                centroidPixels[i][j] = Math.sqrt(centroidPixels[i][j] / (size-1));
+            }
+        }
+
+        return centroid;
+    }
+
+
     public double getDistance(MNISTImage a, MNISTImage b) {
         double[][] pixelsA = a.getPixels();
         double[][] pixelsB = b.getPixels();
@@ -41,6 +66,23 @@ public class MNISTImageProcessor {
                  */
 
                 distance += Math.pow(pixelsA[i][j] - pixelsB[i][j], 2);
+            }
+        }
+
+        return Math.sqrt(distance);
+    }
+
+    public double getDistanceWithSD(MNISTImage a, MNISTImage b, MNISTImage sd) {
+        double[][] pixelsA = a.getPixels();
+        double[][] pixelsB = b.getPixels();
+        double[][] pixelsSD = b.getPixels();
+
+        double distance = 0.0;
+
+        for (int i = 0; i < MNISTReader.MAX_COL; i++) {
+            for (int j = 0; j < MNISTReader.MAX_ROW; j++) {
+                // We are using the higher value of the range of the variance considering that in any case the centroid is located farther than expected.
+                distance += Math.pow(pixelsA[i][j] - pixelsB[i][j], 2) + pixelsSD[i][j];
             }
         }
 

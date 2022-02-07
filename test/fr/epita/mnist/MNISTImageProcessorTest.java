@@ -2,6 +2,7 @@ package fr.epita.mnist;
 
 import fr.epita.mnist.datamodel.MNISTImage;
 import fr.epita.mnist.services.MNISTClassifier;
+import fr.epita.mnist.services.MNISTClassifierSD;
 import fr.epita.mnist.services.MNISTImageProcessor;
 import fr.epita.mnist.services.MNISTReader;
 
@@ -14,6 +15,8 @@ public class MNISTImageProcessorTest {
     public static void main(String[] args) throws Exception {
         MNISTImageProcessor processor = new MNISTImageProcessor();
         MNISTReader reader = new MNISTReader();
+        // Clarification: I am using both files from MNIST
+        List<MNISTImage> imagesTrain = reader.readImagesfromFile("./mnist_train.csv", 100);
         List<MNISTImage> images = reader.readImagesfromFile("./mnist_test.csv", 100);
 
         //We are processing the images and then separating by label
@@ -22,7 +25,7 @@ public class MNISTImageProcessorTest {
 
         //We compute the centroids for each group of images according to their label.
         MNISTClassifier classifier = new MNISTClassifier();
-        classifier.trainCentroids(images);
+        classifier.trainCentroids(imagesTrain);
 
         System.out.println("--- Testing the distance ----------------------------------------");
         List<MNISTImage> listOfOnes = imagesByLabel.get(0.0);
@@ -33,7 +36,14 @@ public class MNISTImageProcessorTest {
         System.out.println("--- Confusion matrix (average centroid) ----------------------------------------");
         double[][] confusionMatrixAverage = calculateDistribution(classifier, images);
         showMatrix(confusionMatrixAverage);
-        System.out.println("The accuracy of the model is: " + calculateCertainty(confusionMatrixAverage, images.size()) * 100 + "%");
+        System.out.println("The accuracy of the model is: " + String.format("%.2f",calculateCertainty(confusionMatrixAverage, images.size()) * 100.00) + "%");
+
+        System.out.println("\n--- Confusion matrix (standard deviation centroid) ----------------------------------------");
+        MNISTClassifierSD classifierSD = new MNISTClassifierSD();
+        classifierSD.trainCentroidsStandardDeviation(imagesTrain);
+        double[][] confusionMatrixSD = calculateDistributionSD(classifierSD, images);
+        showMatrix(confusionMatrixSD);
+        System.out.println("The accuracy of the model is: " + String.format("%.2f",calculateCertainty(confusionMatrixSD, images.size()) * 100.00) + "%");
 
     }
 
@@ -53,7 +63,20 @@ public class MNISTImageProcessorTest {
             int iInDistribution = (int) image.getLabel();
             int jInDistribution = (int) classifier.predict(image);
 
-            distribution[iInDistribution][jInDistribution] += 1;
+            distribution[iInDistribution][jInDistribution] += 1.0;
+        }
+
+        return distribution;
+    }
+
+    public static double[][] calculateDistributionSD(MNISTClassifierSD classifier, List<MNISTImage> images) {
+        double[][] distribution = new double[10][10];
+
+        for (MNISTImage image : images) {
+            int iInDistribution = (int) image.getLabel();
+            int jInDistribution = (int) classifier.predict(image);
+
+            distribution[iInDistribution][jInDistribution] += 1.0;
         }
 
         return distribution;
