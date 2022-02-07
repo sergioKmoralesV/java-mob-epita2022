@@ -48,4 +48,16 @@ public class MNISTImage {
         }
         return String.valueOf(result);
     }
+
+    public String getStringNumbersMatrix() {
+        StringBuilder result = new StringBuilder();
+        double[][] pixels = this.getPixels();
+        for (int i = 0; i < pixels.length; i++) {
+            for (int j = 0; j < pixels[i].length; j++) {
+                result.append(pixels[i][j] + "\t");
+            }
+            result.append("\n");
+        }
+        return String.valueOf(result);
+    }
 }

@@ -28,6 +28,7 @@ public class MNISTImageProcessorTest {
             centroids.put(centroid.getLabel(), centroid);
             System.out.println(centroid);
         }
+
     }
 
 //        System.out.println(processor.computeDistance(listOfOnes.get(0), centroidFor1));
